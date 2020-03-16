@@ -29,7 +29,6 @@ public:
   void display(){
     cout << width*height << endl;
   }
-
 };
 
 int main()
