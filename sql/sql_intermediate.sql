@@ -168,15 +168,22 @@ order by t.grade desc, t.name;
 basic join/full-score
 uses on - between and case, when --- then 
 */
-select Hackers.hacker_id as h_id, Hackers.name as h_name,
-Challenges.challenge_id as c_id, Challenges.difficulty_level as level,
-Difficulty.score as max_score
+select h.hacker_id, h.name
 from 
-Hackers
-left join Challenges
-on Hackers.hacker_id = Challenges.hacker_id
-inner join Difficulty
-on Challenges.difficulty_level = Difficulty.difficulty_level;
+submissions s
+inner join challenges c
+on s.challenge_id = c.challenge_id
+inner join difficulty d
+on c.difficulty_level = d.difficulty_level
+inner join hackers h
+on s.hacker_id = h.hacker_id
+where s.score = d.score and c.difficulty_level = d.difficulty_level
+group by h.hacker_id, h.name
+having count(h.hacker_id) > 1
+order by count(c.difficulty_level) desc, h.hacker_id asc;
+
+
+
 
 
 
