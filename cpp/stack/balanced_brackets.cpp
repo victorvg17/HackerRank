@@ -18,19 +18,25 @@ string isBalanced(string s) {
         mystack.push(c);
         break;
       case(']'):
-        if ((mystack.top() != '[') || mystack.empty()){
+        if (mystack.empty()){
+          return "NO";
+        } else if (mystack.top() != '['){
           return "NO";
         }
         mystack.pop();
         break;
       case(')'):
-        if ((mystack.top() != '(') || mystack.empty()){
+        if (mystack.empty()){
+          return "NO";
+        } else if (mystack.top() != '('){
           return "NO";
         }
         mystack.pop();
         break;
       case('}'):
-        if ((mystack.top() != '{') || mystack.empty()){
+        if (mystack.empty()){
+          return "NO";
+        } else if (mystack.top() != '{'){
           return "NO";
         }
         mystack.pop();
@@ -59,6 +65,7 @@ int main() {
         string result = isBalanced(s);
 
         fout << result << "\n";
+        cout << result << endl;
     }
 
     fout.close();
