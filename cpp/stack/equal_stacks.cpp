@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
-#include <iostream>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -7,20 +8,6 @@ string ltrim(const string &);
 string rtrim(const string &);
 vector<string> split(const string &);
 
-int getSumStack(stack<int>& sh1) {
-  int sum = 0;
-  while (!sh1.empty()) {
-    sum += sh1.top();
-    sh1.pop();
-  }
-  return sum;
-}
-
-void loadVectorToStack(std::vector<int>& h, std::stack<int>& sh) {
-  for (auto& a : h){
-    sh.push(a);
-  }
-}
 /*
  * Complete the 'equalStacks' function below.
  *
@@ -31,36 +18,63 @@ void loadVectorToStack(std::vector<int>& h, std::stack<int>& sh) {
  *  3. INTEGER_ARRAY h3
  */
 
+void consecutiveVectorSum(vector<int>& h_rev) {
+  for (std::size_t i=1; i < h_rev.size(); i++) {
+    h_rev[i] = h_rev[i-1] + h_rev[i];
+  }
+}
+
 int equalStacks(vector<int> h1, vector<int> h2, vector<int> h3) {
-  // basically we do alternating sequence of max(sum stack) and pop operations
-  std::stack<int> sh1;
-  std::stack<int> sh2;
-  std::stack<int> sh3;
-  int max_index = 0;
+  //reverse the vectors and take sum
+  std::reverse(h1.begin(), h1.end());
+  std::reverse(h2.begin(), h2.end());
+  std::reverse(h3.begin(), h3.end());
 
-  bool areStacksLevel = false;
-  std::vector<int> sum[3] = {0, 0, 0};
-  loadVectorToStack(h1, sh1);
-  loadVectorToStack(h2, sh2);
-  loadVectorToStack(h3, sh3);
+  consecutiveVectorSum(h1);
+  consecutiveVectorSum(h2);
+  consecutiveVectorSum(h3);
 
-  //big vector keeping all stacks together
-  std::vector<std::stack> big_vect{sh1, sh2, sh3};
+  std::reverse(h1.begin(), h1.end());
+  std::reverse(h2.begin(), h2.end());
+  std::reverse(h3.begin(), h3.end());
 
-  while (!areStacksLevel) {
-    for (int i=0; i<3; i++) {
-      sum[i] = getSumStack(big_vect[i]);
-    }
-    if (std::adjacent_find(sum.begin(), sum.end(), std::not_equal_to<>()) == sum.end()) {
-      areStacksLevel = true;
-      return sum[0];
-    }
-    max_index = std::max_element(sum.begin(), sum.end()) - sum.begin();
-    //pop element from the max index stack
-    if (!big_vect[max_index].empty() ){
-      big_vect[max_index].pop();
+  vector<int> len_h;
+  len_h.push_back(h1.size());
+  len_h.push_back(h2.size());
+  len_h.push_back(h3.size());
+
+  vector<vector<int>> big_vect;
+  big_vect.push_back(h1);
+  big_vect.push_back(h2);
+  big_vect.push_back(h3);
+
+  int index = *min_element(len_h.begin(), len_h.end());
+
+  if (index == 0) {
+    for (const auto& v:h1) {
+      if ( (find(h2.begin(), h2.end(), v) != h2.end()) && (find(h3.begin(), h3.end(), v) != h3.end()) ) {
+          return v;
+        }
     }
   }
+
+  else if (index == 1) {
+    for (const auto& v:h2) {
+      if ( (find(h1.begin(), h1.end(), v) != h1.end()) && (find(h3.begin(), h3.end(), v) != h3.end()) ) {
+          return v;
+        }
+    }
+  }
+
+  else {
+    for (const auto& v:h3) {
+      if ( (find(h1.begin(), h1.end(), v) != h1.end()) && (find(h2.begin(), h2.end(), v) != h2.end()) ) {
+          return v;
+        }
+    }
+  }
+
+  return 0;
 }
 
 int main()
@@ -122,6 +136,7 @@ int main()
     fout << result << "\n";
 
     fout.close();
+    cout << result;
 
     return 0;
 }
