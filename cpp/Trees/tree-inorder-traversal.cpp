@@ -52,14 +52,13 @@ class Node {
 
 
     void postOrder(Node *root) {
-      //postOrder: Left->Right->Node
+      //postOrder: Left->Node->Right: ascending order of tree
       if (root == nullptr) {
         return;
       }
       postOrder(root->left);
-      postOrder(root->right);
       cout << root->data << " ";
-
+      postOrder(root->right);
     }
 
 }; //End of Solution
